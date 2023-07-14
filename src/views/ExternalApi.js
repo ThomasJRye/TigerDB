@@ -4,9 +4,10 @@ import Highlight from "../components/Highlight";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { getConfig } from "../config";
 import Loading from "../components/Loading";
+import ApiService from "../services/ApiService";
 
 export const ExternalApiComponent = () => {
-  const { apiOrigin = "http://localhost:3000", audience } = getConfig();
+  const { audience } = getConfig();
 
   const [state, setState] = useState({
     showResult: false,
@@ -58,12 +59,12 @@ export const ExternalApiComponent = () => {
     try {
       const token = await getAccessTokenSilently();
 
-      const response = await fetch(`${apiOrigin}/api/external`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      // const response = await fetch(`${apiOrigin}/api/external`, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // });
+      const response = ApiService.getExternalApi();
       const responseData = await response.json();
 
       setState({
