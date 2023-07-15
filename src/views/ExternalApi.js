@@ -57,13 +57,7 @@ export const ExternalApiComponent = () => {
 
   const callApi = async () => {
     try {
-      const token = await getAccessTokenSilently();
-
-      // const response = await fetch(`${apiOrigin}/api/external`, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
+      
       const response = ApiService.getExternalApi();
       const responseData = await response.json();
 

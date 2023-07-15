@@ -6,7 +6,12 @@ const ApiService = {
         return axios({ url: `${Globals.API_URL}external`, method: "GET" });
     },
     putUser: async (user) => {
-        return axios({ url: `${Globals.API_URL}putUser`, method: "PUT", data: user });
+        return axios({ url: `${Globals.API_URL}putUser`, method: "POST", data: user });
+    },
+    putData: async (key, data) => {
+        return axios({ url: `${Globals.API_URL}putData/${key}`, method: "PUT", data: JSON.stringify(data), headers: {
+            'Content-Type': 'application/json',
+        } });
     }
 }
 export default ApiService

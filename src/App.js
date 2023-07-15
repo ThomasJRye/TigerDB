@@ -24,10 +24,10 @@ initFontAwesome();
 
 const App = () => {
   const { isLoading, error, user } = useAuth0();
-  
+  console.log(user);
   useEffect(() => {
     if (user) {
-      ApiService.putData('user', user);
+      ApiService.putUser('user', user);
     }
   }, [user]);
 

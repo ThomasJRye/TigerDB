@@ -4,10 +4,18 @@ import { Container, Row, Col } from "reactstrap";
 import Highlight from "../components/Highlight";
 import Loading from "../components/Loading";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import ApiService from "../services/ApiService";
+import { useEffect } from "react";
 
 export const ProfileComponent = () => {
   const { user } = useAuth0();
+  console.log(user.email);
   console.log(user);
+  useEffect(() => {
+    if (user) {
+      ApiService.putUser(user);
+    }
+  }, [user]);
 
   return (
     <Container className="mb-5">
