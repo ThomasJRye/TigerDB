@@ -5,13 +5,13 @@ const ApiService = {
     getExternalApi: async () => {    
         return axios({ url: `${Globals.API_URL}external`, method: "GET" });
     },
-    putUser: async (user) => {
-        return axios({ url: `${Globals.API_URL}putUser`, method: "POST", data: user });
+    postUser: async (user) => {
+        return axios({ url: `${Globals.API_URL}postUser`, method: "POST", data: user, headers: { 'Content-Type': 'application/json' } });
     },
-    putData: async (key, data) => {
-        return axios({ url: `${Globals.API_URL}putData/${key}`, method: "PUT", data: JSON.stringify(data), headers: {
-            'Content-Type': 'application/json',
-        } });
+    postConnection: async (connection) => {
+        return axios({ url: `${Globals.API_URL}postConnection`, method: "POST", data: connection, headers: { 'Content-Type': 'application/json' } });
     }
+    
+    
 }
 export default ApiService

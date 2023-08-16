@@ -27,7 +27,7 @@ const App = () => {
   console.log(user);
   useEffect(() => {
     if (user) {
-      ApiService.putUser('user', user);
+      ApiService.postUser(user);
     }
   }, [user]);
 
@@ -53,7 +53,7 @@ const App = () => {
             <Route path="/external-api" component={ExternalApi} />
           </Switch>
         </Container>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </Router>
   );
