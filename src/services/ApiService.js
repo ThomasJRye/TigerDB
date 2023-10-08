@@ -20,6 +20,7 @@ const getAuthToken = async (getAccessTokenSilently) => {
 
 
 const ApiService = {
+    
     getExternalApi: async () => {    
         return axios({ url: `${Globals.API_URL}external`, method: "GET" });
     },
@@ -30,14 +31,16 @@ const ApiService = {
         return axios({ url: `${Globals.API_URL}postConnection`, method: "POST", data: connection, headers: { 'Content-Type': 'application/json' } });
     },
     // returns the list of connection owned by the user
-    getConnections: async () => {
+    getConnections: async ( user ) => {
         const token = await getAuthToken();  // replace with your method to get Auth0 token
         return axios({ 
-            url: `${Globals.API_URL}getConnections`, 
+            url: `${Globals.API_URL}db-connection`, 
             method: "GET", 
+            params: { user: user },
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'User': JSON.stringify(user)
             }
         });
     }

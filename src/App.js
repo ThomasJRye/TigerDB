@@ -11,7 +11,7 @@ import ExternalApi from "./views/ExternalApi";
 import { useAuth0 } from "@auth0/auth0-react";
 import history from "./utils/history";
 import ApiService from './services/ApiService'; // import ApiService here
-
+import { Auth0Provider } from "@auth0/auth0-react";
 import "./App.css";
 
 import initFontAwesome from "./utils/initFontAwesome";
@@ -35,22 +35,27 @@ const App = () => {
   }
 
   
-
   return (
-    <Router history={history}>
-      <div id="app" className="d-flex flex-column h-100">
-        <NavBar />
-        <Container className="flex-grow-1 mt-5">
-          <Switch>
-            <Route path="/" exact component={Home} />
-            <Route path="/connections" component={Connections} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/external-api" component={ExternalApi} />
-          </Switch>
-        </Container>
-        {/* <Footer /> */}
-      </div>
-    </Router>
+    <Auth0Provider
+        domain={process.env.REACT_APP_AUTH0_DOMAIN}
+        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+        redirectUri={window.location.origin}
+    >
+      <Router history={history}>
+        <div id="app" className="d-flex flex-column h-100">
+          <NavBar />
+          <Container className="flex-grow-1 mt-5">
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/connections" component={Connections} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/external-api" component={ExternalApi} />
+            </Switch>
+          </Container>
+          {/* <Footer /> */}
+        </div>
+      </Router>
+    </Auth0Provider>
   );
 };
 

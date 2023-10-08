@@ -3,19 +3,24 @@ import { Container, Row, Col } from "reactstrap";
 import ApiService from "../services/ApiService";
 import Loading from "../components/Loading";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useQuery } from "react-query";
 
 export const ConnectionsComponent = () => {
   const { user } = useAuth0();
   console.log(user);
-  // const { Connections } = useQuery({
-  //   queryFn: () => ApiService.getConnections(user),
-  //   select: (data) => data.data,
-  //   placeholderData: { data: {} },
-  // });
+  const { getAccessTokenSilently } = useAuth0();
+
+  const { Connections } = useQuery({
+    queryFn: () => ApiService.getConnections(user),
+    select: (data) => data.data,
+    placeholderData: { data: {} },
+  });
+
+  console.log(Connections);
   let connections = null
   useEffect((user, connections) => {
-    connections = ApiService.getConnections(user);
-  }, [user, connections]);
+    connections = ApiService.getConnections(user, getAccessTokenSilently);
+  }, [user, connections, getAccessTokenSilently]);
 
   console.log(connections)
   return (
