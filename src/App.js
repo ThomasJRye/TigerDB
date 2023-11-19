@@ -11,20 +11,21 @@ import ExternalApi from "./views/ExternalApi";
 import { useAuth0 } from "@auth0/auth0-react";
 import history from "./utils/history";
 import ApiService from './services/ApiService'; // import ApiService here
-import { Auth0Provider } from "@auth0/auth0-react";
 import "./App.css";
 
 import initFontAwesome from "./utils/initFontAwesome";
 initFontAwesome();
 
 const App = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
   const { isLoading, error, user } = useAuth0();
   console.log(user);
   useEffect(() => {
     if (user) {
-      ApiService.postUser(user);
+      ApiService.postUser(user, getAccessTokenSilently);
     }
-  }, [user]);
+  }, [getAccessTokenSilently, user]);
 
   if (error) {
     return <div>Oops... {error.message}</div>;
@@ -36,11 +37,7 @@ const App = () => {
 
   
   return (
-    <Auth0Provider
-        domain={process.env.REACT_APP_AUTH0_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-        redirectUri={window.location.origin}
-    >
+    
       <Router history={history}>
         <div id="app" className="d-flex flex-column h-100">
           <NavBar />
@@ -55,7 +52,6 @@ const App = () => {
           {/* <Footer /> */}
         </div>
       </Router>
-    </Auth0Provider>
   );
 };
 

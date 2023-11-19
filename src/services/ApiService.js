@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { Globals } from '../Globals'
-import { useAuth0 } from "@auth0/auth0-react";
-
 // Function to securely communicate with API
 
 const getAuthToken = async (getAccessTokenSilently) => {
     try {
         const token = await getAccessTokenSilently({
-            audience: "YOUR_API_IDENTIFIER",
+            audience: process.env.REACT_APP_AUTH0_CLIENT_ID,
             scope: "read:current_user",
         });
         return token;
@@ -18,33 +16,25 @@ const getAuthToken = async (getAccessTokenSilently) => {
 };
 
 
-
 const ApiService = {
-    
     getExternalApi: async () => {    
         return axios({ url: `${Globals.API_URL}external`, method: "GET" });
     },
-    postUser: async (user) => {
-        return axios({ url: `${Globals.API_URL}postUser`, method: "POST", data: user, headers: { 'Content-Type': 'application/json' } });
+    postUser: async (user, getAccessTokenSilently) => {
+        const token = await getAuthToken(getAccessTokenSilently);
+        return axios({ url: `${Globals.API_URL}postUser`, method: "POST", data: user, headers: { 'Authorization': `Bearer ${token}` } });
     },
-    postConnection: async (connection) => {
-        return axios({ url: `${Globals.API_URL}postConnection`, method: "POST", data: connection, headers: { 'Content-Type': 'application/json' } });
+    postConnection: async (connection, getAccessTokenSilently) => {
+        const token = await getAuthToken(getAccessTokenSilently);
+        return axios({ url: `${Globals.API_URL}postConnection`, method: "POST", data: connection, headers: { 'Authorization': `Bearer ${token}` } });
     },
-    // returns the list of connection owned by the user
-    getConnections: async ( user ) => {
-        const token = await getAuthToken();  // replace with your method to get Auth0 token
+    getConnections: async (getAccessTokenSilently) => {
+        const token = await getAuthToken(getAccessTokenSilently);
         return axios({ 
             url: `${Globals.API_URL}db-connection`, 
             method: "GET", 
-            params: { user: user },
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                'User': JSON.stringify(user)
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
     }
-    
-    
 }
-export default ApiService
+export default ApiService;

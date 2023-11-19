@@ -14,26 +14,16 @@ const onRedirectCallback = (appState) => {
   );
 };
 
-// Please see https://auth0.github.io/auth0-react/interfaces/Auth0ProviderOptions.html
-// for a full list of the available properties on the provider
-const config = getConfig();
 
-const providerConfig = {
-  domain: config.domain,
-  clientId: config.clientId,
-  onRedirectCallback,
-  authorizationParams: {
-    redirect_uri: window.location.origin,
-    ...(config.audience ? { audience: config.audience } : null),
-  },
-};
 const queryClient = new QueryClient();
 
 const root = createRoot(document.getElementById('root'));
 root.render(
   <Auth0Provider
-    {...providerConfig}
-  >
+        domain={process.env.REACT_APP_AUTH0_DOMAIN}
+        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+        redirectUri={'http://localhost:3000'}
+    >
     <QueryClientProvider client={queryClient}>
           <App />
     </QueryClientProvider>
