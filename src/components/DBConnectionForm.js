@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 // form for connecting to a database
 const DBConnectionForm = () => {
+    const [name, setName] = useState("");
     const [host, setHost] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -37,16 +38,16 @@ const DBConnectionForm = () => {
         event.preventDefault();
         // put information into an object
         const connectionInfo = {
-            user: user,
             host: host,
+            database: database,
+            port: port,
             username: username,
             password: password,
-            database: database,
-            port: port
-        };
+            user: 1
 
-        //send information to postConnection in ApiService
-        ApiService.postConnection(connectionInfo, getAccessTokenSilently);
+        };
+        ApiService.add_db(connectionInfo);
+
     };
     if (isAuthenticated) {
         return (
@@ -59,7 +60,22 @@ const DBConnectionForm = () => {
                         onChange={(e) => setHost(e.target.value)} 
                     />
                 </label>
-
+                <label>
+                    Port:
+                    <input 
+                        type= "text" 
+                        value={port} 
+                        onChange={(e) => setPort(e.target.value)} 
+                        />
+                </label>
+                <label>
+                    Database:
+                    <input 
+                        type="text" 
+                        value={database} 
+                        onChange={(e) => setDatabase(e.target.value)} 
+                    />
+                </label>
                 <label>
                     Username:
                     <input 
@@ -77,25 +93,6 @@ const DBConnectionForm = () => {
                         onChange={(e) => setPassword(e.target.value)} 
                     />
                 </label>
-
-                <label>
-                    Database:
-                    <input 
-                        type="text" 
-                        value={database} 
-                        onChange={(e) => setDatabase(e.target.value)} 
-                    />
-                </label>
-
-                <label>
-                    Port:
-                    <input 
-                        type= "text" 
-                        value={port} 
-                        onChange={(e) => setPort(e.target.value)} 
-                        />
-                </label>
-
                 <input type="submit" value="Connect" />
             </form>
         );

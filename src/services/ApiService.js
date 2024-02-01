@@ -16,6 +16,7 @@ const getAuthToken = async (getAccessTokenSilently) => {
 };
 
 
+
 const ApiService = {
     getExternalApi: async () => {    
         return axios({ url: `${Globals.API_URL}external`, method: "GET" });
@@ -35,6 +36,18 @@ const ApiService = {
             method: "GET", 
             headers: { 'Authorization': `Bearer ${token}` }
         });
-    }
+    },
+    test: async () => {
+        return axios({ url: `${Globals.API_URL}/test`, method: "GET" });
+    },
+    add_db: async (connectionInfo, getAccessTokenSilently) => {
+        // const token = await getAuthToken(getAccessTokenSilently);
+        return axios({ 
+            url: `${Globals.API_URL}add_db`, 
+            method: "POST", 
+            data: connectionInfo,
+            // headers: { 'Authorization': `Bearer ${token}` }
+        });
+    },
 }
 export default ApiService;

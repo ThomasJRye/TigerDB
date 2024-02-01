@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { Router, Route, Switch } from "react-router-dom";
 import { Container } from "reactstrap";
 
@@ -17,16 +17,30 @@ import initFontAwesome from "./utils/initFontAwesome";
 initFontAwesome();
 
 const App = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isLoading, error, user } = useAuth0();
+  const [token, setToken] = useState(null);
 
-  const { isLoading, error, user } = useAuth0();
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const accessToken = await getAccessTokenSilently();
+        setToken(accessToken);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    getToken();
+  }, [getAccessTokenSilently]);
+
   console.log(user);
   useEffect(() => {
-    if (user) {
-      ApiService.postUser(user, getAccessTokenSilently);
+    if (user && token) {
+      ApiService.test(token);
     }
-  }, [getAccessTokenSilently, user]);
-
+  }, [user, token]);
+ 
   if (error) {
     return <div>Oops... {error.message}</div>;
   }
@@ -35,6 +49,7 @@ const App = () => {
     return <Loading />;
   }
 
+  
   
   return (
     
@@ -48,6 +63,10 @@ const App = () => {
               <Route path="/profile" component={Profile} />
               <Route path="/external-api" component={ExternalApi} />
             </Switch>
+            <div>
+            <h1>GET Request Example</h1>
+            
+          </div>
           </Container>
           {/* <Footer /> */}
         </div>
