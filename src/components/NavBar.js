@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink as RouterNavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import ApiService from "../services/ApiService.js";
 import {
   Collapse,
   Container,
@@ -26,14 +26,41 @@ const NavBar = () => {
     isAuthenticated,
     loginWithRedirect,
     logout,
+    getAccessTokenSilently
   } = useAuth0();
   const toggle = () => setIsOpen(!isOpen);
+  const [dbs, setDbs] = useState([]);
+  const [selectedDb, setSelectedDb] = useState('');
+
+
+  useEffect(() => {
+    const fetchDatabases = async () => {
+      try {
+        
+          const response = await ApiService.getDBs(getAccessTokenSilently, JSON.stringify(user)); // Adjust this call based on your actual API service method
+          if (response.status === 200) {
+              setDbs(response.data);
+          } else {
+              console.error('Failed to fetch databases');
+          }
+      } catch (error) {
+          console.error('Error fetching databases:', error);
+      }
+    };
+
+    fetchDatabases(); // Call the function when the component is mounted
+  }, [getAccessTokenSilently, user]); // Empty dependency array ensures it's only called once on mount
+
+  const handleDbSelection = (event) => {
+      setSelectedDb(event.target.value);
+      // Here, you can also do something with the selected database, e.g., storing the selection or making another API call based on the selection
+  };
+
+
 
   const logoutWithRedirect = () =>
     logout({
-        logoutParams: {
-          returnTo: window.location.origin,
-        }
+      returnTo: window.location.origin,
     });
 
   return (
@@ -53,16 +80,18 @@ const NavBar = () => {
                   Add Connection
                 </NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink
-                  tag={RouterNavLink}
-                  to="/connections"
-                  exact
-                  activeClassName="router-link-exact-active"
-                >
-                  Connections
-                </NavLink>
-              </NavItem>
+              {dbs.map((db) => (
+                <NavItem key={db.id}> {/* Ensure you have a unique key prop */}
+                  <NavLink
+                    tag={RouterNavLink}
+                    to={`/database/${db.id}`}
+                    exact
+                    activeClassName="router-link-exact-active"
+                  >
+                    {db.username}
+                  </NavLink>
+                </NavItem>
+              ))}
             </Nav>
             <Nav className="d-none d-md-block" navbar>
               {!isAuthenticated && (

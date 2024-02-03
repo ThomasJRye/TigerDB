@@ -46,7 +46,7 @@ const DBConnectionForm = () => {
             user: 1
 
         };
-        ApiService.add_db(connectionInfo);
+        ApiService.addDB(getAccessTokenSilently, connectionInfo);
 
     };
     if (isAuthenticated) {
