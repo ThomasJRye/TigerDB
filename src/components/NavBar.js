@@ -34,22 +34,30 @@ const NavBar = () => {
 
 
   useEffect(() => {
-    const fetchDatabases = async () => {
+    const fetchDatabases = async (user) => {
       try {
-        
-          const response = await ApiService.getDBs(getAccessTokenSilently, JSON.stringify(user)); // Adjust this call based on your actual API service method
-          if (response.status === 200) {
-              setDbs(response.data);
-          } else {
-              console.error('Failed to fetch databases');
-          }
+        console.log(user.sub)
+        const userData = {
+          identifier: user.sub,
+          email: user.email
+        }
+        const response = await ApiService.getDBs(getAccessTokenSilently, userData); // Ensure your API service handles this appropriately
+        if (response && response.status === 200 && response.data) {
+          setDbs(response.data);
+        } else {
+          console.error('Failed to fetch databases');
+          setDbs([]); // Ensure dbs is always an array to prevent runtime errors
+        }
       } catch (error) {
-          console.error('Error fetching databases:', error);
+        console.error('Error fetching databases:', error);
+        setDbs([]); // Handle error by setting dbs to an empty array
       }
     };
 
-    fetchDatabases(); // Call the function when the component is mounted
-  }, [getAccessTokenSilently, user]); // Empty dependency array ensures it's only called once on mount
+    if (user) {
+      fetchDatabases(user); // Only fetch databases if user is defined
+    }
+  }, [getAccessTokenSilently, user]); // Dependency array ensures effect is run when dependencies change
 
   const handleDbSelection = (event) => {
       setSelectedDb(event.target.value);

@@ -47,7 +47,7 @@ const ApiService = {
             const token = await getAuthToken(getAccessTokenSilently);
             return axios({
                 url: `${Globals.API_URL}get_dbs`,
-                method: "GET",
+                method: "POST",
                 data: user,
                 headers: { 'authorization': `Bearer ${token}` } // Use the token for authentication
             });
