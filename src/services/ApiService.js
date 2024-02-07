@@ -56,7 +56,7 @@ const ApiService = {
             throw error;
         }
     },
-    getDB: async (id, getAccessTokenSilently) => {
+    getDB: async (getAccessTokenSilently, id) => {
         try {
             const token = await getAuthToken(getAccessTokenSilently);
             return axios({

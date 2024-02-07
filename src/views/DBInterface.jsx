@@ -1,34 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import * as d3 from 'd3';
 import ApiService from '../services/ApiService';
-
-const DBInterface = ({ match }) => { // Destructure `match` from props
+import { useAuth0 } from "@auth0/auth0-react";
+import BarChart from './BarChart';
+const DBInterface = ({ match }) => {
   const [data, setData] = useState(null);
-  const id = match.params.id; // Access the `id` parameter
+  const id = match.params.id;
+  const { getAccessTokenSilently } = useAuth0();
 
-  useEffect(() => {
-    // Example of using the `id` to fetch data from an API
-    const fetchData = async () => {
-      try {
-        const response = await ApiService.getDB(id); // Assuming you have a method to fetch data by ID
-        setData(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await ApiService.getDB(getAccessTokenSilently, id);
+  //       setData(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [id]); // Depend on `id` so this effect runs whenever `id` changes
+  //   fetchData();
+  // }, [getAccessTokenSilently, id]);
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+ 
 
+  // if (!data) {
+  //   return <div>Loading...</div>;
+  // }
+
+  
   return (
-    <div>
-      {/* Render your data based on the `id` */}
-      <h2>Data for ID: {id}</h2>
-      {/* Display your data here */}
-    </div>
+    <BarChart />
   );
 };
 
