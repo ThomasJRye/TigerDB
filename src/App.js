@@ -69,14 +69,13 @@ const App = () => {
     <Router history={history}>
       <div id="app" className="d-flex flex-column h-100">
         <NavBar />
-        <Container className="flex-grow-1 mt-5">
+        <Container className="main" >
           <Switch>
             <Route path="/" exact component={Home} />
             <Route path="/connections" component={Connections} />
             <Route path="/profile" component={Profile} />
             <Route path="/database/:id" component={DBInterface} />
           </Switch>
-          <div></div>
         </Container>
         {/* <Footer /> */}
       </div>

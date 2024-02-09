@@ -33,3 +33,9 @@
 .result-block-container .result-block {
   opacity: 1;
 }
+
+.container {
+  max-width: 200000px;
+  padding-right: 0px;
+  padding-left: 0px;
+}
