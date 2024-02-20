@@ -73,8 +73,8 @@ const NavBar = () => {
   return (
     <div className="nav-container">
       <Navbar color="light" light expand="md" container={false}>
-        <Container>
-          <NavbarToggler onClick={toggle} />
+        <Container className="navbar-container">
+          <NavbarToggler classname="NavbarToggler" onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             <Nav className="mr-auto" navbar>
               <NavItem>
