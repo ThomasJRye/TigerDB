@@ -14,6 +14,9 @@ const DBInterface = ({ match }) => {
     height: window.innerHeight,
   });
 
+  // storage of table representation
+  const [rectangles, setRectangles] = useState([]);
+
   useEffect(() => {
     const handleResize = () => {
       setDimensions({
@@ -46,7 +49,7 @@ const DBInterface = ({ match }) => {
         count: 140,
         columns: {
           id: {
-            type: "bigint unsigned",
+            type: "bigint unsigned asdfasd fasdfasdfasdfasdfasdfasdfsd",
             primary_key: true,
             foreign_key: false,
             referenced_table: null,
@@ -109,19 +112,6 @@ const DBInterface = ({ match }) => {
 
     setData(json);
   }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   
   useEffect(() => {
     if (!data) return; // Guard clause to ensure data is not null
@@ -130,6 +120,8 @@ const DBInterface = ({ match }) => {
 
     const keys = Object.keys(data);
     const spacing = 50; // Spacing between rectangles
+
+    const newRectangles = [];
 
     const svg = d3
       .select(svgRef.current)
@@ -144,17 +136,36 @@ const DBInterface = ({ match }) => {
       .append("g");
     var xPosition = 10;
     var rectangleWidth = 0;
+
     keys.forEach((key) => {
       console.log(data[key])
+
       if (!data[key] || !data[key].columns) return;
+
       const columns = Object.keys(data[key].columns);
       const rectangleHeight = 50 + columns.length * 20; // Fixed height for all rectangles
       xPosition = xPosition + rectangleWidth + spacing;
-      rectangleWidth = key.length * 15; 
+
+      rectangleWidth = key.length * 13; 
+
       if (rectangleWidth < 200) {
         rectangleWidth = 200;
       }
       const yPosition = 10;
+
+      // get foreign keys
+      const newRectangle = {
+        name: key,
+        x: xPosition,
+        y: yPosition,
+        width: rectangleWidth,
+        height: rectangleHeight,
+        foerign_keys: columns.filter((column) => data[key].columns[column].foreign_key),
+      };
+
+      newRectangles.push(newRectangle);
+
+
       svg
         .append("rect")
         .attr("x", xPosition)
@@ -179,15 +190,27 @@ const DBInterface = ({ match }) => {
       // Iterate through columns to display each name and type
       columns.forEach((column, colIndex) => {
         const columnType = data[key].columns[column].type;
+        // if length of column is greater than 15 only use the first 15 characters
+        var useableColumnType = columnType;
+
+        console.log((rectangleWidth - (column.length*20))/6)
+        if (columnType.length > (rectangleWidth - 180)) {
+          useableColumnType = columnType.substring(0, (rectangleWidth - (column.length*12 - 72))/12) + "...";
+        }
+
         svg
           .append("text")
           .attr("x", xPosition + 10)
           .attr("y", yPosition + 50 + colIndex * 20) // Offset each line
-          .text(`${column}: ${columnType}`)
+          .text(`${column}: ${useableColumnType}`)
           .attr("font-size", "12px");
       });
     });
+
+    setRectangles(newRectangles)
   }, [data, dimensions]);
+
+  console.log(rectangles);
 
   return <div ref={svgRef}></div>;
 };
