@@ -84,8 +84,11 @@ const DBInterface = ({ match }) => {
     drawRectangles(svg, newRectangles);
   };
   
-  const drawRectangles = (svg, rectangles) => {
-    const movedRectangles = TablePhysicsEngine(data, rectangles, dimensions, 100);
+  const drawRectangles = (svg, rectangles, time) => {
+    // console.log("Before physics:", rectangles.map(r => ({ x: r.x, y: r.y })));
+    const movedRectangles = TablePhysicsEngine(rectangles, 10);
+    // const movedRectangles = rectangles;
+    // console.log("After physics:", movedRectangles.map(r => ({ x: r.x, y: r.y })));
     for (let i = 0; i < movedRectangles.length; i++) {
       const rectangle = movedRectangles[i];
       const xPosition = rectangle.x;
@@ -166,10 +169,31 @@ const DBInterface = ({ match }) => {
 
   console.log(rectangles);
 
+   // A function to manually trigger the redrawing of rectangles
+   const redrawRectangles = () => {
+    if (!data) {
+      console.log("No data available to redraw rectangles.");
+      return;
+    }
+
+    // Assuming createRectangles does the job of redrawing,
+    // you might need to ensure the svg is cleared or reset if needed.
+    d3.select(svgRef.current).select("svg").select("g").selectAll("*").remove();
+
+    // Then, call the function to recreate the rectangles.
+    // You might need to pass the same svg element to it if it doesn't handle it already.
+    const svg = d3.select(svgRef.current).select("svg").select("g");
+    createRectangles(data, svg);
+  };
+
+
   return (
     <>
       {loading ? <div>Loading...</div> : null} 
-      
+
+      {/* dont include in prod */}
+      <button onClick={redrawRectangles}>Redraw Rectangles</button> 
+
       <div ref={svgRef}></div>
     </>
   );
