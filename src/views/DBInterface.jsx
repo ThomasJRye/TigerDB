@@ -44,8 +44,6 @@ const DBInterface = ({ match }) => {
   // Draw rectangles function
   const createRectangles = (data, svg) => {
     const keys = Object.keys(data);
-    const spacing = 50;
-    let xPosition = 10;
     let rectangleWidth = 0;
     const newRectangles = [];
 
@@ -54,9 +52,10 @@ const DBInterface = ({ match }) => {
 
       const columns = Object.keys(data[key].columns);
       const rectangleHeight = 50 + columns.length * 20;
-      xPosition += rectangleWidth + spacing;
+      const xPosition = Math.floor(Math.random() * 100);
+      const yPosition = Math.floor(Math.random() * 100);
+
       rectangleWidth = Math.max(key.length * 13, 200);
-      const yPosition = 10;
 
       var referenced_tables = [];
       columns.forEach((column) => {
@@ -86,7 +85,7 @@ const DBInterface = ({ match }) => {
   
   const drawRectangles = (svg, rectangles, time) => {
     // console.log("Before physics:", rectangles.map(r => ({ x: r.x, y: r.y })));
-    const movedRectangles = TablePhysicsEngine(rectangles, 10);
+    const movedRectangles = TablePhysicsEngine(rectangles, 9000);
     // const movedRectangles = rectangles;
     // console.log("After physics:", movedRectangles.map(r => ({ x: r.x, y: r.y })));
     for (let i = 0; i < movedRectangles.length; i++) {

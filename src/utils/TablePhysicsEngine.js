@@ -1,45 +1,68 @@
 const margin = 10; // Margin for collision detection
 
 function TablePhysicsEngine(rectangles, time) {
-    const moveStep = 1; // Increase move step for more noticeable adjustments
+    const moveStep = 500; // Increase move step for more noticeable adjustments
 
     for (let i = 0; i < time; i++) {
         for (let j = 0; j < rectangles.length; j++) {
             var sumMoveX = 0;
             var sumMoveY = 0;
             const centerPointI = CenterPoint(rectangles[j]);
+            let xDistance = 0;
+            let yDistance = 0;
             
             // find referenced table
             const referenced_table = rectangles[j].referenced_tables[0];
+            // find referenced table rectangle
+            const referenced_table_rectangle = rectangles.find(r => r.name === referenced_table);
 
-            console.log("referenced_table", referenced_table);
-            // for (let k = 0; k < rectangles.length; k++) {
-            //     if (k === j) continue; // Skip self
-            //     const centerPointK = CenterPoint(rectangles[k]);
+            if (referenced_table_rectangle) {
+                // if referenced table rectangle is found, calculate the force
 
-            //     // Calculate direction of movement based on position difference
-            //     const xDirection = centerPointI.x < centerPointK.x ? -1 : 1;
-            //     const yDirection = centerPointI.y < centerPointK.y ? -1 : 1;
+                const centerpointReferenced = CenterPoint(referenced_table_rectangle);
+                xDistance = centerPointI.x - centerpointReferenced.x;
+                yDistance = centerPointI.y - centerpointReferenced.y;
 
-            //     const NearForce = 5 * force(rectangles[j], rectangles[k], Distance(rectangles[j], rectangles[k]), 11);
-            //     const FarForce = 4 * force(rectangles[j], rectangles[k], Distance(rectangles[j], rectangles[k]), 10);
+                if (Math.abs(xDistance) > 4) {
+                    sumMoveX += attractionForce(xDistance, 2.5);
+                    sumMoveY += attractionForce(yDistance, 2.5);
+                }  
+                
+            } else {
+                xDistance = centerPointI.x; // Assuming a default value for xDistance when referenced_table_rectangle is not found
+                yDistance = centerPointI.y; // Assuming a default value for yDistance when referenced_table_rectangle is not found
 
-            //     sumMoveX += xDirection * (FarForce + NearForce);
-            //     sumMoveY += yDirection * (FarForce + NearForce);
+                // Make sure the rectangles don't overlap
+                if (Math.abs(xDistance) < 20) {
+                    sumMoveX -= 0.01 * repulsionForce(xDistance, 3);
+                    sumMoveY -= 0.01 * repulsionForce(yDistance, 3);
+                }
 
-            // }
+                // Make sure the rectangles are not too far apart
+                const universal_attraction_exponent =  10;
+                if (Math.abs(xDistance) > 6) {
+                    sumMoveX += 2*attractionForce(xDistance, universal_attraction_exponent);
+                    sumMoveY += 2*attractionForce(yDistance, universal_attraction_exponent);
+                } 
 
-            // rectangles[j].x += sumMoveX * moveStep;
-            // rectangles[j].y += sumMoveY * moveStep;
+                // move everything to the center
+                rectangles[j].x += -2*attractionForce(centerPointI.x, 5);
+                rectangles[j].y += -2*attractionForce(centerPointI.y, 5);
 
-            rectangles[j].x += -1;
+            }
 
+            rectangles[j].x += sumMoveX * moveStep;
+            rectangles[j].y += sumMoveY * moveStep;
+
+            
         }
     }
     return rectangles;
 }
 
+
 function CenterPoint(rect) {
+    if (!rect) return;
     return {
         x: rect.x + rect.width / 2,
         y: rect.y + rect.height / 2
@@ -58,8 +81,12 @@ function Distance(rect1, rect2) {
     return Math.sqrt(Math.pow(rect1.x - rect2.x, 2) + Math.pow(rect1.y - rect2.y, 2));
 }
 
-function force(distance, exp) {
-    return 1 / Math.pow(distance, exp);
+function repulsionForce(distance, exp) {
+    return 100 / distance ** 2;
+}
+
+function attractionForce(distance, exp) {
+    return Math.pow(2, exp) / Math.pow(distance, 2);
 }
 
 

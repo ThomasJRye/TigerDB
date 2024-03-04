@@ -11,7 +11,7 @@ const useDataFetching = (match, getAccessTokenSilently, data, setData, loading, 
         count: 140,
         columns: {
           id: {
-            type: "bigint unsigned asdfasd fasdfasdfasdfasdfasdfasdfsd",
+            type: "bigint unsigned",
             primary_key: true,
             foreign_key: false,
             referenced_table: null,
@@ -50,6 +50,7 @@ const useDataFetching = (match, getAccessTokenSilently, data, setData, loading, 
             primary_key: false,
             foreign_key: true,
             referenced_table: "users",
+          },
         },
       },
       users: {
@@ -66,14 +67,106 @@ const useDataFetching = (match, getAccessTokenSilently, data, setData, loading, 
             primary_key: false,
             foreign_key: false,
             referenced_table: null,
-          }
-        }
-      }
+          },
+        },
+      },
+      products: {
+        count: 50,
+        columns: {
+          id: {
+            type: "bigint unsigned",
+            primary_key: true,
+            foreign_key: false,
+            referenced_table: null,
+          },
+          name: {
+            type: "varchar(255)",
+            primary_key: false,
+            foreign_key: false,
+            referenced_table: null,
+          },
+          price: {
+            type: "decimal(10,2)",
+            primary_key: false,
+            foreign_key: false,
+            referenced_table: null,
+          },
+        },
+      },
+      orders: {
+        count: 200,
+        columns: {
+          id: {
+            type: "bigint unsigned",
+            primary_key: true,
+            foreign_key: false,
+            referenced_table: null,
+          },
+          user_id: {
+            type: "varchar(255)",
+            primary_key: false,
+            foreign_key: true,
+            referenced_table: "users",
+          },
+          created_at: {
+            type: "datetime",
+            primary_key: false,
+            foreign_key: false,
+            referenced_table: null,
+          },
+        },
+      },
+      order_items: {
+        count: 450,
+        columns: {
+          order_id: {
+            type: "bigint unsigned",
+            primary_key: false,
+            foreign_key: true,
+            referenced_table: "orders",
+          },
+          product_id: {
+            type: "bigint unsigned",
+            primary_key: false,
+            foreign_key: true,
+            referenced_table: "products",
+          },
+          quantity: {
+            type: "int",
+            primary_key: false,
+            foreign_key: false,
+            referenced_table: null,
+          },
+        },
+      },
+      cars: {
+        count: 450,
+        columns: {
+          id: {
+            type: "bigint unsigned",
+            primary_key: true,
+            foreign_key: false,
+            referenced_table: null,
+          },
+          model: {
+            type: "bigint unsigned",
+            primary_key: false,
+            foreign_key: false,
+            referenced_table: null,
+          },
+          quantity: {
+            type: "int",
+            primary_key: false,
+            foreign_key: false,
+            referenced_table: null,
+          },
+        },
       },
     };
-
+  
     setData(json);
   }, []);
+  
   
   useEffect(() => {
     const cachedData = localStorage.getItem("cachedData");
