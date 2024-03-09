@@ -85,7 +85,7 @@ const DBInterface = ({ match }) => {
   
   const drawRectangles = (svg, rectangles, time) => {
     // console.log("Before physics:", rectangles.map(r => ({ x: r.x, y: r.y })));
-    const movedRectangles = TablePhysicsEngine(rectangles, 9000);
+    const movedRectangles = TablePhysicsEngine(rectangles, 200);
     // const movedRectangles = rectangles;
     // console.log("After physics:", movedRectangles.map(r => ({ x: r.x, y: r.y })));
     for (let i = 0; i < movedRectangles.length; i++) {

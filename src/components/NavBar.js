@@ -74,7 +74,7 @@ const NavBar = () => {
     <div className="nav-container">
       <Navbar color="light" light expand="md" container={false}>
         <Container className="navbar-container">
-          <NavbarToggler classname="NavbarToggler" onClick={toggle} />
+          <NavbarToggler className="NavbarToggler" onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             <Nav className="mr-auto" navbar>
               <NavItem>

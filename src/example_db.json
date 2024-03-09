@@ -1,0 +1,65 @@
+{
+  "access_tokens": {
+    "count": 140,
+    "columns": {
+      "id": {
+        "type": "bigint unsigned asdfasd fasdfasdfasdfasdfasdfasdfsd",
+        "primary_key": true,
+        "foreign_key": false,
+        "referenced_table": null
+      },
+      "tenant_id": {
+        "type": "bigint",
+        "primary_key": false,
+        "foreign_key": true,
+        "referenced_table": "tenant"
+      },
+      "user_id": {
+        "type": "varchar(255)",
+        "primary_key": false,
+        "foreign_key": true,
+        "referenced_table": "users"
+      }
+    }
+  },
+  "tenants": {
+    "count": 10,
+    "columns": {
+      "id": {
+        "type": "bigint unsigned",
+        "primary_key": true,
+        "foreign_key": false,
+        "referenced_table": null
+      },
+      "name": {
+        "type": "varchar(255)",
+        "primary_key": false,
+        "foreign_key": false,
+        "referenced_table": null
+      },
+      "user_id": {
+        "type": "varchar(255)",
+        "primary_key": false,
+        "foreign_key": true,
+        "referenced_table": "users"
+      }
+    }
+  },
+  "users": {
+    "count": 100,
+    "columns": {
+      "id": {
+        "type": "varchar(255)",
+        "primary_key": true,
+        "foreign_key": false,
+        "referenced_table": null
+      },
+      "name": {
+        "type": "varchar(255)",
+        "primary_key": false,
+        "foreign_key": false,
+        "referenced_table": null
+      }
+    }
+  }
+}
