@@ -181,6 +181,7 @@ const useDataFetching = (match, getAccessTokenSilently, data, setData, loading, 
       setLoading(true);
       try {
         const response = await ApiService.getDB(getAccessTokenSilently, id);
+        if (!response.data) return;
         setData(response.data);
         localStorage.setItem("cachedData", JSON.stringify(response.data));
       } catch (error) {

@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import { useAuth0 } from "@auth0/auth0-react";
 import useResize from "../query/hooks/useResize";
 import useDataFetching from "../query/hooks/useDataFetching";
-import TablePhysicsEngine from "../utils/TablePhysicsEngine";
+import tablePlacer from "../utils/TablePlacer";
 
 const DBInterface = ({ match }) => {
   const svgRef = useRef(null);
@@ -85,7 +85,7 @@ const DBInterface = ({ match }) => {
   
   const drawRectangles = (svg, rectangles, time) => {
     // console.log("Before physics:", rectangles.map(r => ({ x: r.x, y: r.y })));
-    const movedRectangles = TablePhysicsEngine(rectangles, 200);
+    const movedRectangles = tablePlacer(rectangles, 200);
     // const movedRectangles = rectangles;
     // console.log("After physics:", movedRectangles.map(r => ({ x: r.x, y: r.y })));
     for (let i = 0; i < movedRectangles.length; i++) {
