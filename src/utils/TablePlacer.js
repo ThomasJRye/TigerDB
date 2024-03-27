@@ -39,27 +39,44 @@ function TablePlacer(rectangles, time) {
 
     return rectangles;
 }
-
-function findClusters(rectangles, clusters, rectangles_lookup) {
+function findClusters(rectangles, clusters = [], rectangles_lookup) {
     if (!rectangles.length) return clusters;
 
     const head = rectangles[0];
-    var tail = rectangles.slice(1);
+    const tail = rectangles.slice(1);
 
-    const referenced_tables = head.referenced_tables
-        .map((table) => rectangles_lookup.find((rect) => rect.name === table))
+    // Finding direct and mutual references
+    const referencedTables = head.referenced_tables.map(table => rectangles_lookup.find(rect => rect.name === table));
+    const mutualReferences = referencedTables.filter(table => table.referenced_tables.includes(head.name));
 
-    const table_references_head = []
-    for (let i = 0; i < referenced_tables.length; i++) {
-        const table = referenced_tables[i];
-        if (table.referenced_tables.includes(head.name)) {
-            table_references_head.push(table);
+    const cluster = [head, ...mutualReferences, ...referencedTables];
+    clusters.push([...new Set(cluster)]); // Ensure unique elements
+    clusters = combineClusters(clusters);
+
+    return findClusters(tail, clusters, rectangles_lookup);
+}
+
+function combineClusters(clusters) {
+    let merged = false;
+    do {
+        merged = false;
+        for (let i = 0; i < clusters.length; i++) {
+            for (let j = i + 1; j < clusters.length; j++) {
+                const setA = new Set(clusters[i]);
+                const setB = new Set(clusters[j]);
+                const intersection = new Set([...setA].filter(x => setB.has(x)));
+                if (intersection.size > 0) { // If clusters have common elements, merge them
+                    clusters[i] = [...new Set([...clusters[i], ...clusters[j]])];
+                    clusters.splice(j, 1); // Remove the merged cluster
+                    merged = true;
+                    break; // Need to restart since we modified the array
+                }
+            }
+            if (merged) break; // Restart if any merge happened
         }
-    }
-    const cluster = [head, ...table_references_head, ...referenced_tables]
-    clusters.push(cluster)
+    } while (merged);
 
-    return findClusters(tail, clusters, rectangles_lookup)
+    return clusters;
 }
 
 
@@ -92,4 +109,4 @@ function attractionForce(distance, exp) {
 }
 
 
-export default TablePlacer;
+export { TablePlacer, findClusters, combineClusters };
