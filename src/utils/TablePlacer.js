@@ -1,11 +1,30 @@
-const margin = 10; // Margin for collision detection
+const MARGIN = 10; // Margin for collision detection
 
 // Gives coordinates for the rectangles
 // Places referenced tables next to each other
+/**
+ * Adjusts the placement of rectangles based on their relationships and avoids overlaps.
+ * @param {Array} rectangles - List of rectangle objects to be placed.
+ * @param {Number} time - Iteration count for adjusting positions.
+ * @returns {Array} The adjusted list of rectangles.
+ */
 function TablePlacer(rectangles, time) {
     const moveStep = 5;
+
+    // Area where rectangles are placed, is a list of coordinates
+    var occupied = [];
     var clusters = findClusters(rectangles, [], rectangles);
     console.log(clusters);
+
+    // Sort clusters by size
+    clusters.sort((a, b) => b.length - a.length);
+    // Move clusters to their respective positions
+    clusters.forEach((cluster) => {
+        placeCluster(cluster, occupied);
+    });
+        
+        
+    
     for (let i = 0; i < time; i++) {
         rectangles.forEach((rect, j) => {
             let sumMoveX = 0;
@@ -39,6 +58,38 @@ function TablePlacer(rectangles, time) {
 
     return rectangles;
 }
+
+function placeCluster(cluster, occupied) {
+    // Start placing clusters at an initial position
+    placeClusterRecursive(cluster, occupied, 0, 0);
+}
+
+
+
+/**
+ * Recursively places a cluster of rectangles, starting from the provided coordinates.
+ * @param {Array} cluster - The cluster of rectangles to place.
+ * @param {Array} occupied - Array of already placed rectangles to avoid overlap.
+ * @param {Number} x - Starting X coordinate.
+ * @param {Number} y - Starting Y coordinate.
+ */
+function placeClusterRecursive(cluster, occupied, x, y) {
+    if (cluster.length === 0) return;
+
+    const rectangle = cluster[0];
+    // Check if the current position is occupied
+    if (occupied.some(rect => isColliding(rect, rectangle))) {
+        x += rectangle.width + MARGIN; // Move right if collision detected
+        placeClusterRecursive(cluster, occupied, x, y);
+    } else {
+        // Place rectangle and mark position as occupied
+        Object.assign(rectangle, { x, y });
+        occupied.push(rectangle);
+        placeClusterRecursive(cluster.slice(1), occupied, x + rectangle.width + MARGIN, y);
+    }
+}
+
+
 function findClusters(rectangles, clusters = [], rectangles_lookup) {
     if (!rectangles.length) return clusters;
 
@@ -89,11 +140,22 @@ function CenterPoint(rect) {
 }
 
 // Collision detection function
-function isColliding(rect1, rect2) {
-    return rect1.x < rect2.x + rect2.width + margin &&
-        rect1.x + rect1.width + margin > rect2.x &&
-        rect1.y < rect2.y + rect2.height + margin &&
-        rect1.y + rect1.height + margin > rect2.y;
+function isColliding(rect, object) {
+    // check if object is polygon or rectangle
+    if (object instanceof Array) {
+        for (let i = 0; i < object.points.length; i++) {
+            if (rect.x < object.points[i].x && rect.x + rect.width > object.points[i].x &&
+                rect.y < object.points[i].y && rect.y + rect.height > object.points[i].y) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        return rect.x < object.x + object.width + MARGIN &&
+            rect.x + rect.width + MARGIN > object.x &&
+            rect.y < object.y + object.height + MARGIN &&
+            rect.y + rect.height + MARGIN > object.y;
+    }
 }
 
 function Distance(rect1, rect2) {
